@@ -10,9 +10,9 @@
   "author": "Rahil Shaikh",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "1.15.1",
-    "express": "4.13.4",
-    "multer": "1.1.0",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "multer": "^1.1.0",
     "xls-to-json-lc": "0.3.3",
     "xlsx-to-json-lc": "0.2.5"
   }

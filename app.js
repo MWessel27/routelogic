@@ -48,13 +48,13 @@ app.post('/upload', function(req, res) {
         try {
             exceltojson({
                 input: req.file.path,
-                output: null, //since we don't need output.json
+                output: './uploads/upload.json', //since we don't need output.json
                 lowerCaseHeaders:true
             }, function(err,result){
                 if(err) {
                     return res.json({error_code:1,err_desc:err, data: null});
                 }
-                res.json({error_code:0,err_desc:null, data: result});
+                res.json(result.address);
             });
         } catch (e){
             res.json({error_code:1,err_desc:"Corrupted excel file"});

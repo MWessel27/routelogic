@@ -31,16 +31,32 @@ if (status !== 'OK') {
 
   outputDiv.innerHTML +='<table>' + '<tr>'+'<th>Address</th>'+'<th>Distance</th>'+'<th>Time</th>'+'</tr>';
   for (var i = 0; i < originList.length; i++) {
+    var addressList = {
+      addresses: []
+    };
+
     var results = response.rows[i].elements;
+    for (var j = 0; j < results.length; j++) {
+      var item = results[j];
+      addressList.addresses.push({
+        "address": destinationList[j],
+        "distance": item.distance.text,
+        "duration": item.duration.text
+      });
+    }
+
     geocoder.geocode({'address': originList[i]},
         showGeocodedAddressOnMap(false));
-    for (var j = 0; j < results.length; j++) {
+
+    var sorted = addressList.addresses.sort(function(a, b) {
+      var tempDistA = a.distance[0] + a.distance[1] + a.distance[2] + a.distance[3];
+      var tempDistB = b.distance[0] + b.distance[1] + b.distance[2] + b.distance[3];
+      return tempDistA - tempDistB;
+    });
+    for (var j = 0; j < sorted.length; j++) {
       geocoder.geocode({'address': destinationList[j]},
           showGeocodedAddressOnMap(true));
-      outputDiv.innerHTML += '<table><tr>' + '<td>' + destinationList[j] + '</td>'+ '<td>' + results[j].distance.text + '</td>'+ '<td>' + results[j].duration.text + '</td>' + '</tr>';
-      // outputDiv.innerHTML += originList[i] + ' to ' + destinationList[j] +
-      //     ': ' + results[j].distance.text + ' in ' +
-      //     results[j].duration.text + '<br>';
+      outputDiv.innerHTML += '<table><tr>' + '<td>' + sorted[j].address + '</td>'+ '<td>' + sorted[j].distance + '</td>'+ '<td>' + sorted[j].duration + '</td>' + '</tr>';
     }
   }
   //outputDiv.innerHTML +='</table>';

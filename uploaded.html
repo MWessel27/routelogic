@@ -23,13 +23,9 @@
 </nav>
     <div class="jumbotron"  style="padding:40px;">
       <img class="logo" src="http://localhost:3000/images/rl.png" alt="My_Logo">
-      <p>First step is to load in all of your addresses.</p>
-      <p><form id        =  "uploadForm"
-          action         = "upload"
-          enctype   =  "multipart/form-data"
-          method    =  "post">
-      <input type="file" name="file" accept=".xls,.xlsx" multiple="false" />
-      <input type="submit" value="Route" name="submit" >
+      <p>Congratulations you've uploaded your first list of addresses!</p>
+      <p><form action="/uploaded" method="POST">
+        <input type="submit" value="View Addresses"/>
       </form></p>
     </div>
   </div>

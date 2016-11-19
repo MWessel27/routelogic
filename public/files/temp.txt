@@ -1,0 +1,6 @@
+<table>
+  <tr>
+    <th>Address</th>
+    <th>Distance</th>
+    <th>Time</th>
+  </tr>

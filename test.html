@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Route Logic</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div style="margin:100px;">
+      <nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">Route Logic</a>
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="jumbotron"  style="padding:40px;">
+    <img class="logo" src="http://localhost:3000/images/rl.png" alt="My_Logo">
+  </div>
+  <style>
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+  </style>
+      <div id="inputs">
+        <table>
+          <tr>
+            <th>Origin Address</th>
+          </tr>
+          <td>6307 Gentle Ben Cir, Wesley Chapel, FL 33544, USA</td>
+        </table>
+      </div>
+      <div>
+        <h1><strong>Routed Addresses</strong></h1>
+      </div>
+      <div id="output"></div>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var bounds = new google.maps.LatLngBounds;
+        var markersArray = [];
+
+        var origin1 = '6307 Gentle Ben Cir, Wesley Chapel, FL 33544, USA';
+        var destinationA = '8802 Venture Cove, Tampa, FL 33637, USA';
+        //var destinationB = '7616 Industrial Ln, Tampa, FL 33637, USA';
+        var destinationB = '114 Chippendale Terrace, Oviedo, FL 32765, USA';
+
+        var destinationIcon = 'https://chart.googleapis.com/chart?' +
+            'chst=d_map_pin_letter&chld=D|FF0000|000000';
+        var originIcon = 'https://chart.googleapis.com/chart?' +
+            'chst=d_map_pin_letter&chld=O|FFFF00|000000';
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 55.53, lng: 9.4},
+          zoom: 10
+        });
+        var geocoder = new google.maps.Geocoder;
+
+        var service = new google.maps.DistanceMatrixService;
+        service.getDistanceMatrix({
+          origins: [origin1],
+          destinations: [destinationA, destinationB],
+          travelMode: 'DRIVING',
+          unitSystem: google.maps.UnitSystem.IMPERIAL,
+          avoidHighways: false,
+          avoidTolls: false
+        }, function(response, status) {
+          if (status !== 'OK') {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            deleteMarkers(markersArray);
+
+            var showGeocodedAddressOnMap = function(asDestination) {
+              var icon = asDestination ? destinationIcon : originIcon;
+              return function(results, status) {
+                if (status === 'OK') {
+                  map.fitBounds(bounds.extend(results[0].geometry.location));
+                  markersArray.push(new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    icon: icon
+                  }));
+                } else {
+                  alert('Geocode was not successful due to: ' + status);
+                }
+              };
+            };
+
+            outputDiv.innerHTML +='<table>' + '<tr>'+'<th>Address</th>'+'<th>Distance</th>'+'<th>Time</th>'+'</tr>';
+            for (var i = 0; i < originList.length; i++) {
+              var results = response.rows[i].elements;
+              geocoder.geocode({'address': originList[i]},
+                  showGeocodedAddressOnMap(false));
+              for (var j = 0; j < results.length; j++) {
+                geocoder.geocode({'address': destinationList[j]},
+                    showGeocodedAddressOnMap(true));
+                outputDiv.innerHTML += '<table><tr>' + '<td>' + destinationList[j] + '</td>'+ '<td>' + results[j].distance.text + '</td>'+ '<td>' + results[j].duration.text + '</td>' + '</tr>';
+                // outputDiv.innerHTML += originList[i] + ' to ' + destinationList[j] +
+                //     ': ' + results[j].distance.text + ' in ' +
+                //     results[j].duration.text + '<br>';
+              }
+            }
+            //outputDiv.innerHTML +='</table>';
+          }
+        });
+      }
+
+      function deleteMarkers(markersArray) {
+        for (var i = 0; i < markersArray.length; i++) {
+          markersArray[i].setMap(null);
+        }
+        markersArray = [];
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAESVZkEV6W30DcS-QlzpIVkluBPNv3DXs&callback=initMap">
+    </script>
+  </body>
+</html>

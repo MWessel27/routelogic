@@ -23,15 +23,28 @@
 </nav>
     <div class="jumbotron"  style="padding:40px;">
       <img class="logo" src="http://localhost:3000/images/rl.png" alt="My_Logo">
-      <p>First step is to load in all of your addresses.</p>
-      <p><form id        =  "uploadForm"
-          action         = "upload"
-          enctype   =  "multipart/form-data"
-          method    =  "post">
-      <input type="file" name="file" accept=".xls,.xlsx" multiple="false" />
-      <input type="submit" value="Route" name="submit" >
-      </form></p>
-    </div>
-  </div>
-</body>
-</html>
+      <p>Now that you have your address list, we need to optimize your route.</p>
+      <style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<table>
+  <tr>
+    <th>Address</th>
+  </tr>
